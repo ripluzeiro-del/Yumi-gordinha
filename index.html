@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18 de julho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@500;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FFF6F0;
+    --blush: #F7D6DE;
+    --blush-2: #F3C7D2;
+    --rose: #C24C63;
+    --rose-deep: #9E3A50;
+    --lavender: #D8C7EC;
+    --plum: #3E2532;
+    --plum-soft: #6B4A57;
+    --gold: #E0AC3F;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--cream);
+    color: var(--plum);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .hearts-field{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .heart{
+    position: absolute;
+    bottom: -40px;
+    color: var(--rose);
+    opacity: 0.3;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp{
+    0%{ transform: translateY(0) rotate(0deg); opacity: 0; }
+    10%{ opacity: 0.35; }
+    90%{ opacity: 0.25; }
+    100%{ transform: translateY(-110vh) rotate(25deg); opacity: 0; }
+  }
+
+  section, header{ position: relative; z-index: 2; }
+
+  /* ---------- hero (compact) ---------- */
+  .hero{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 56px 24px 30px 24px;
+    background: radial-gradient(ellipse at top, var(--blush) 0%, var(--cream) 70%);
+  }
+
+  .hero .month-label{
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rose-deep);
+    margin-top: 8px;
+  }
+
+  .hero .big-date{
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(3.6rem, 12vw, 6rem);
+    line-height: 1;
+    color: var(--rose);
+    text-shadow: 0 4px 20px rgba(194,76,99,0.18);
+  }
+
+  /* ---------- envelope ---------- */
+  .envelope-section{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    padding: 10px 20px 60px 20px;
+  }
+
+  .prompt-text{
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--rose-deep);
+    margin-bottom: 22px;
+    opacity: 0.85;
+  }
+
+  .envelope{
+    width: min(300px, 78vw);
+    aspect-ratio: 3/2;
+    position: relative;
+    cursor: pointer;
+    perspective: 1000px;
+  }
+
+  .env-back{
+    position:absolute;
+    inset:0;
+    background: linear-gradient(155deg, #fff, var(--blush));
+    border: 1px solid var(--blush-2);
+    box-shadow: 0 20px 50px rgba(158,58,80,0.18);
+  }
+
+  .env-flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 55%;
+    background: linear-gradient(160deg, var(--blush-2), var(--blush));
+    clip-path: polygon(0 0, 100% 0, 50% 78%);
+    transform-origin: top;
+    transition: transform 0.7s cubic-bezier(.6,.2,.2,1);
+    z-index: 3;
+    border-top: 1px solid var(--blush-2);
+  }
+
+  .seal{
+    position:absolute;
+    top: 38%;
+    left:50%;
+    width: 46px; height: 46px;
+    background: radial-gradient(circle at 35% 30%, #E88CA0, var(--rose) 70%);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 4;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: #fff;
+    font-size: 1.15rem;
+    box-shadow: 0 6px 16px rgba(158,58,80,0.35);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .env-letter-peek{
+    position:absolute;
+    left: 6%; right:6%;
+    bottom: 8%;
+    height: 70%;
+    background: #fff;
+    box-shadow: 0 -6px 16px rgba(0,0,0,0.06);
+  }
+
+  .envelope.opened .env-flap{
+    transform: rotateX(180deg);
+  }
+  .envelope.opened .seal{
+    opacity: 0;
+    transform: translate(-50%,-50%) scale(0.5);
+  }
+
+  /* ---------- letter ---------- */
+  .letter-stage{
+    width: min(600px, 92vw);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 1s ease;
+  }
+  .letter-stage.opened{
+    max-height: 1400px;
+  }
+
+  .letter-paper{
+    background: #fff;
+    color: var(--plum);
+    margin-top: 24px;
+    padding: clamp(28px, 6vw, 56px);
+    box-shadow: 0 24px 60px rgba(158,58,80,0.16);
+    position: relative;
+    opacity: 0;
+    transform: translateY(-14px);
+    transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+  }
+  .letter-stage.opened .letter-paper{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .corner-photo{
+    position:absolute;
+    top: -26px;
+    right: 24px;
+    width: 92px;
+    height: 92px;
+    background: #fff;
+    padding: 6px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  }
+  .corner-photo img{
+    width:100%; height:100%;
+    object-fit: cover;
+    display:block;
+  }
+
+  .letter-paper .opener{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+    color: var(--rose-deep);
+    margin: 0 0 18px 0;
+    padding-right: 90px;
+  }
+
+  .letter-paper p{
+    font-size: clamp(1rem, 1.6vw, 1.12rem);
+    line-height: 1.85;
+    margin: 0 0 18px 0;
+  }
+
+  .signature{
+    font-family: 'Caveat', cursive;
+    font-size: 2rem;
+    color: var(--rose);
+    text-align: right;
+    margin-top: 20px;
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  /* ---------- gallery (square) ---------- */
+  .gallery-section{
+    padding: 30px 20px 100px 20px;
+  }
+
+  .section-title{
+    text-align:center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    color: var(--rose-deep);
+    margin-bottom: 40px;
+  }
+
+  .square-grid{
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .sq-frame{
+    background: #fff;
+    padding: 10px 10px 30px 10px;
+    box-shadow: 0 12px 28px rgba(62,37,50,0.12);
+  }
+
+  .sq-frame img{
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .sq-frame .cap{
+    text-align:center;
+    margin-top: 10px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    color: var(--plum-soft);
+  }
+
+  @media (max-width: 640px){
+    .square-grid{
+      grid-template-columns: 1fr;
+      max-width: 320px;
+    }
+    .corner-photo{
+      position: static;
+      margin: 0 auto 18px auto;
+    }
+    .letter-paper .opener{ padding-right: 0; }
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    text-align:center;
+    padding: 60px 20px 70px 20px;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 100%);
+  }
+  footer .big-heart{
+    font-size: 1.9rem;
+    color: var(--rose);
+    margin-bottom: 14px;
+  }
+  footer p{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--plum-soft);
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts-field" id="heartsField"></div>
+
+<!-- HERO (compacto) -->
+<section class="hero">
+  <div class="big-date">18</div>
+  <div class="month-label">de julho</div>
+</section>
+
+<!-- ENVELOPE / CARTA -->
+<section class="envelope-section">
+  <div class="prompt-text reveal">toque para abrir ♡</div>
+  <div class="envelope reveal" id="envelope">
+    <div class="env-letter-peek"></div>
+    <div class="env-back"></div>
+    <div class="env-flap"></div>
+    <div class="seal">Y</div>
+  </div>
+
+  <div class="letter-stage" id="letterStage">
+    <div class="letter-paper">
+      <div class="corner-photo">
+        <img src="foto-1.jpeg" alt="minha gordinha">
+      </div>
+      <p class="opener">Minha peituda,</p>
+      <p>Amo muito você. Desde o primeiro momento que te conheci, percebi que você foi feita pra mim.</p>
+      <p>Espero passar o resto da minha vida com você — você significa tudo pra mim, tudo mesmo. Foi a primeira e vai ser a última que vou viver e amar o resto da vida.</p>
+      <p>Pelo seu jeito, a gente combina muito. Obrigado por estar comigo!</p>
+      <p>Te amo muito, minha amor. Feliz aniversário, lindona. 🤍</p>
+      <div class="signature">— seu amor</div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section class="gallery-section">
+  <h2 class="section-title reveal">minha mulher</h2>
+  <div class="square-grid reveal">
+    <div class="sq-frame">
+      <img src="foto-1.jpeg" alt="minha gordinha">
+      <div class="cap">minha gordinha</div>
+    </div>
+    <div class="sq-frame">
+      <img src="foto-2.jpeg" alt="minha gordinha">
+      <div class="cap">é você</div>
+    </div>
+    <div class="sq-frame">
+      <img src="foto-3.jpeg" alt="minha gordinha">
+      <div class="cap">❤️</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="big-heart">🤍</div>
+  <p>feliz aniversário, Yumi. eu te amo.</p>
+</footer>
+
+<script>
+  const field = document.getElementById('heartsField');
+  for(let i=0;i<14;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.innerHTML = '♥';
+    const size = 10 + Math.random()*20;
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.animationDuration = (10 + Math.random()*14) + 's';
+    h.style.animationDelay = (Math.random()*14) + 's';
+    field.appendChild(h);
+  }
+
+  const envelope = document.getElementById('envelope');
+  const letterStage = document.getElementById('letterStage');
+  envelope.addEventListener('click', ()=>{
+    envelope.classList.toggle('opened');
+    letterStage.classList.toggle('opened');
+  });
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
